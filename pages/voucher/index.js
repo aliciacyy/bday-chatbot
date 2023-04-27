@@ -16,10 +16,10 @@ const Voucher = (props) => {
       <div className="scene">
         <div className={`card ${flipped ? "flip" : ""}`} onClick={flipCard}>
           <div className="card__face card__face--front">
-            <img src="/imgs/voucher-front.jpg" />
+            <img src="./imgs/voucher-front.jpg" />
           </div>
           <div className="card__face card__face--back">
-            <img src="/imgs/voucher-back.jpg" />
+            <img src="./imgs/voucher-back.jpg" />
             <div className="text">
               <div className="title">This voucher entitles you to:</div>
               <ul>
