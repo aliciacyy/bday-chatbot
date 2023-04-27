@@ -6,9 +6,7 @@ import ChatComponent from "./ChatComponent";
 export default function Home() {
   const firstMsgs = [
     "Hello, stranger.",
-    "How you doin?",
-    "Test.",
-    "Test test.",
+    "How you doin?"
   ];
 
   return (

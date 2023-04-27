@@ -9,12 +9,13 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const ChatComponent = (props) => {
   const [showTyping, setShowTyping] = useState(false);
   const [disableInput, setDisableInput] = useState(true);
+  const [voucherMsg, setVoucherMsg] = useState(false);
   const [msgList, setMsgList] = useState([]);
   const [firstReply, setFirstReply] = useState();
   const { firstMsgs } = props;
@@ -39,6 +40,13 @@ const ChatComponent = (props) => {
   const onSendMsg = (event) => {
     setFirstReply(event);
     setDisableInput(true);
+    setTimeout(() => {
+      setShowTyping(true);
+    }, 1000);
+    setTimeout(() => {
+      setVoucherMsg(true);
+      setShowTyping(false);
+    }, 3000);
   };
 
   return (
@@ -74,6 +82,18 @@ const ChatComponent = (props) => {
                 position: "last",
               }}
             />
+          )}
+          {voucherMsg && (
+            <Message
+              key="voucher"
+              model={{
+                direction: "incoming",
+              }}
+            >
+              <Message.CustomContent>
+                <Link href="/voucher">Click me for your reward!</Link>
+              </Message.CustomContent>
+            </Message>
           )}
         </MessageList>
         <MessageInput
