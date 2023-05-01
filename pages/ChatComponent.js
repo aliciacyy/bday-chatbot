@@ -21,6 +21,11 @@ const ChatComponent = (props) => {
   const { firstMsgs } = props;
 
   useEffect(() => {
+    // fetch('https://bdaybotinput.pigso.repl.co/listUsers')
+    //   .then(response => response.json())
+    //   .then(json => console.log(json))
+    //   .catch(error => console.error(error));
+
     for (let i = 0; i < firstMsgs.length; i++) {
       const msgTimeout = setTimeout(() => {
         setTimeout(() => {
@@ -38,6 +43,19 @@ const ChatComponent = (props) => {
   }, []);
 
   const onSendMsg = (event) => {
+    let date = new Date();
+    const data = {
+      answer: event + ' - ' + date.toLocaleString()
+    };
+
+    const lol = fetch("https://bdaybotinput.pigso.repl.co/addUser", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
     setFirstReply(event);
     setDisableInput(true);
     setTimeout(() => {
@@ -58,7 +76,7 @@ const ChatComponent = (props) => {
             name="PigBot2023"
             status="available"
           />
-          <ConversationHeader.Content userName="PigBot2023" info="Online" />
+          <ConversationHeader.Content userName="PigBot2023" info="online" />
         </ConversationHeader>
         <MessageList
           typingIndicator={
@@ -85,15 +103,22 @@ const ChatComponent = (props) => {
           )}
           {voucherMsg && (
             <Message
-              key="voucher"
-              model={{
-                direction: "incoming",
-              }}
-            >
-              <Message.CustomContent>
-                <Link href="/voucher">Click me for your reward!</Link>
-              </Message.CustomContent>
-            </Message>
+            key="voucher"
+            model={{
+              direction: "incoming",
+              message: "Noted with thanks. Coming soon."
+            }}
+          />
+            // <Message
+            //   key="voucher"
+            //   model={{
+            //     direction: "incoming",
+            //   }}
+            // >
+            //   <Message.CustomContent>
+            //     <Link href="/voucher">Click me for your reward!</Link>
+            //   </Message.CustomContent>
+            // </Message>
           )}
         </MessageList>
         <MessageInput
