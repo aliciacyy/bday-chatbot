@@ -32,8 +32,6 @@ const ChatComponent = (props) => {
 
   const { firstMsgs, questions } = props;
   const router = useRouter();
-
-  const durationUntilFirstMsgs = 3000 * (firstMsgs.length + 1);
   let qnIdx = 0;
 
   useEffect(() => {
@@ -42,6 +40,7 @@ const ChatComponent = (props) => {
     //   .then(json => console.log(json))
     //   .catch(error => console.error(error));
 
+    const durationUntilFirstMsgs = 3000 * (firstMsgs.length + 1);
     // print the first msgs
     for (let i = 0; i < firstMsgs.length; i++) {
       const msgTimeout = setTimeout(() => {
