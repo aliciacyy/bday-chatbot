@@ -23,11 +23,11 @@ const Voucher = (props) => {
             <div className="text">
               <div className="title">This voucher entitles you to:</div>
               <ul>
-                <li>All expenses paid dinner</li>
+                <li>Dinner at Northpoint of your choice</li>
                 <li>1 slice of Cat and the Fiddle</li>
-                <li>1 can of beer</li>
-                <li>20 mins Swedish back massage</li>
-                <li>10 mins facial</li>
+                <li>1 bubble tea</li>
+                <li>20 mins back massage</li>
+                <li>15 mins facial</li>
                 <li>1 movie screening at home + popcorn</li>
                 <li>1 night stay at 10 star home</li>
               </ul>

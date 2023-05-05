@@ -11,7 +11,7 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import Link from "next/link";
 import { useEffect, useState, useReducer } from "react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 const ChatComponent = (props) => {
   const [showTyping, setShowTyping] = useState(false);
@@ -19,20 +19,27 @@ const ChatComponent = (props) => {
   const [voucherMsg, setVoucherMsg] = useState(false);
   const [msgList, setMsgList] = useState([]);
 
-  const [statusState, dispatchStatus] = useReducer((state, action) => {
-    return { status: "unavailable", msg: "offline" };
-  }, { 
-    status: "available", 
-    msg: "online" 
-  });
+  const [statusState, dispatchStatus] = useReducer(
+    (state, action) => {
+      if (action.type == "WRONG") {
+        return { status: "unavailable", msg: "offline" };
+      } else {
+        return { status: "away", msg: "away" };
+      }
+    },
+    {
+      status: "available",
+      msg: "online",
+    }
+  );
 
-  const [firstQn, setFirstQn] = useState();
-  const [firstReply, setFirstReply] = useState();
   const [wrongAnswer, setWrongAnswer] = useState();
+  const [qnIdx, setQnIdx] = useState(0);
+
+  const [questionAndAnswer, setQuestionAndAnswer] = useState([]);
 
   const { firstMsgs, questions } = props;
   const router = useRouter();
-  let qnIdx = 0;
 
   useEffect(() => {
     // fetch('https://bdaybotinput.pigso.repl.co/listUsers')
@@ -60,7 +67,10 @@ const ChatComponent = (props) => {
         setShowTyping(true);
       }, 1000);
       setTimeout(() => {
-        setFirstQn(questions[qnIdx]);
+        setQuestionAndAnswer([{
+          msg: questions[qnIdx].question,
+          direction: 'incoming'
+        }]);
         setShowTyping(false);
       }, 3000);
     }, durationUntilFirstMsgs);
@@ -84,8 +94,12 @@ const ChatComponent = (props) => {
     //   body: JSON.stringify(data),
     // });
 
-    setFirstReply(event);
+    // setFirstReply(event);
     setDisableInput(true);
+    setQuestionAndAnswer((prev) => [...prev, {
+      msg: event,
+      direction: 'outgoing'
+    }]);
 
     // validate msg
     let ans = questions[qnIdx].answer;
@@ -94,15 +108,35 @@ const ChatComponent = (props) => {
     }, 1000);
     if (ans !== event.trim().toLowerCase()) {
       setTimeout(() => {
-        dispatchStatus(true);
+        dispatchStatus({
+          type: "WRONG"
+        });
         setWrongAnswer(true);
         setShowTyping(false);
       }, 3000);
     } else {
-      setTimeout(() => {
-        setVoucherMsg(true);
-        setShowTyping(false);
-      }, 3000);
+      setQnIdx((prev) => prev + 1);
+      if (qnIdx+1 >= questions.length) {
+        setTimeout(() => {
+          dispatchStatus({
+            type: "CORRECT"
+          });
+          setVoucherMsg(true);
+          setShowTyping(false);
+        }, 3000);
+      } else {
+        setTimeout(() => {
+          setShowTyping(true);
+        }, 1000);
+        setTimeout(() => {
+          setQuestionAndAnswer((prev) => [...prev, {
+            msg: questions[qnIdx+1].question,
+            direction: 'incoming'
+          }]);
+          setShowTyping(false);
+          setDisableInput(false);
+        }, 3000);
+      }
     }
   };
 
@@ -115,7 +149,10 @@ const ChatComponent = (props) => {
             name="PigBot2023"
             status={statusState.status}
           />
-          <ConversationHeader.Content userName="PigBot2023" info={statusState.msg} />
+          <ConversationHeader.Content
+            userName="PigBot2023"
+            info={statusState.msg}
+          />
         </ConversationHeader>
         <MessageList
           typingIndicator={
@@ -131,54 +168,38 @@ const ChatComponent = (props) => {
             />
           ))}
 
-          {firstQn && (
+          {questionAndAnswer.map((txt, idx) => (
             <Message
-              key="firstQn"
+              key={'qanda' + idx}
               model={{
-                message: firstQn.question,
+                message: txt.msg,
+                direction: txt.direction
               }}
             />
-          )}
-
-          {firstReply && (
-            <Message
-              key="firstReply"
-              model={{
-                message: firstReply,
-                direction: "outgoing",
-                position: "last",
-              }}
-            />
-          )}
+          ))}
 
           {wrongAnswer && (
             <Message
-            key="wrongAns"
-            model={{
-              direction: "incoming",
-              message: "WRONG! Please refresh and try again. Bye."
-            }}
-          />
+              key="wrongAns"
+              model={{
+                direction: "incoming",
+                message: "WRONG! Please refresh and try again. Bye.",
+              }}
+            />
           )}
 
           {voucherMsg && (
             <Message
-            key="voucher"
-            model={{
-              direction: "incoming",
-              message: "Noted with thanks. Coming soon."
-            }}
-          />
-            // <Message
-            //   key="voucher"
-            //   model={{
-            //     direction: "incoming",
-            //   }}
-            // >
-            //   <Message.CustomContent>
-            //     <Link href="/voucher">Click me for your reward!</Link>
-            //   </Message.CustomContent>
-            // </Message>
+              key="voucher"
+              model={{
+                direction: "incoming",
+              }}
+            >
+              <Message.CustomContent>
+                Congrats, you have gotten all questions correct! You're indeed WS!<br/><br/>
+                <Link href="/voucher">Click me for your reward!</Link>
+              </Message.CustomContent>
+            </Message>
           )}
         </MessageList>
         <MessageInput
