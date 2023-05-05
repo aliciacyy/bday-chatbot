@@ -8,7 +8,6 @@ export default function Home() {
     "Hello, I am PigBot.",
     "It seems that today is a special day for WS.",
     "However, to ascertain that you are WS, I will need to give you a quiz first.",
-    "If you get any questions wrong, you need to refresh and read this entire conversation again.",
     "Are you ready?",
   ];
 

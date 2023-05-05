@@ -33,7 +33,6 @@ const ChatComponent = (props) => {
     }
   );
 
-  const [wrongAnswer, setWrongAnswer] = useState();
   const [qnIdx, setQnIdx] = useState(0);
 
   const [questionAndAnswer, setQuestionAndAnswer] = useState([]);
@@ -108,11 +107,12 @@ const ChatComponent = (props) => {
     }, 1000);
     if (ans !== event.trim().toLowerCase()) {
       setTimeout(() => {
-        dispatchStatus({
-          type: "WRONG"
-        });
-        setWrongAnswer(true);
+        setQuestionAndAnswer((prev) => [...prev, {
+          msg: "WRONG! But I'll give you another chance.",
+          direction: 'incoming'
+        }]);
         setShowTyping(false);
+        setDisableInput(false);
       }, 3000);
     } else {
       setQnIdx((prev) => prev + 1);
@@ -177,16 +177,6 @@ const ChatComponent = (props) => {
               }}
             />
           ))}
-
-          {wrongAnswer && (
-            <Message
-              key="wrongAns"
-              model={{
-                direction: "incoming",
-                message: "WRONG! Please refresh and try again. Bye.",
-              }}
-            />
-          )}
 
           {voucherMsg && (
             <Message
