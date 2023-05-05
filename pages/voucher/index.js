@@ -25,6 +25,7 @@ const Voucher = (props) => {
               <ul>
                 <li>Dinner at Northpoint of your choice</li>
                 <li>1 slice of Cat and the Fiddle</li>
+                <li>1 fancy body wash from The Body Shop</li>
                 <li>1 bubble tea</li>
                 <li>20 mins back massage</li>
                 <li>15 mins facial</li>
